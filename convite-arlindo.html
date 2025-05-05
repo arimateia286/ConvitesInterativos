@@ -9,18 +9,14 @@
 
 <style>
     body {
+        display: flex;
+        justify-content: center;
         margin: 0;
         font-family: sans-serif;
     }
 
-    #main {
-        position: relative;
-    }
-
     #background {
         position: absolute;
-        left: 0;
-        top: 0;
         width: 100%;
         height: auto;
         z-index: 0;
@@ -31,54 +27,51 @@
         align-items: center;
         justify-content: center;
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
         z-index: 1;
     }
 
-    #local,
+    #location,
     #whatsapp,
-    #counter {
+    #wrapper {
         position: absolute;
         text-decoration: none;
+    }
+
+    #wrapper {
+        display: flex;
+        justify-content: center;
     }
 
     #counter {
         color: white;
         font-weight: bold;
-        font-size: 3.1rem;
         display: flex;
-        flex-direction: row;
-        text-align: center;
         margin: 0;
     }
 
-    #days,
-    #hours,
-    #mins,
-    #secs,
     p {
         margin: 0;
         white-space: pre;
     }
 
-    .text {
-        font-size: 1rem;
+    #days,
+    #hours,
+    #mins,
+    #secs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
-    .confete-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    .confetti-container {
+        position: absolute;
         pointer-events: none;
-        z-index: 9999;
+        z-index: 2;
         overflow: hidden;
     }
 
-    .confete {
+    .confetti {
         position: absolute;
         width: 10px;
         height: 10px;
@@ -86,14 +79,14 @@
         opacity: 1;
     }
 
-    @keyframes explodir {
+    @keyframes explode {
         to {
             transform: translate(var(--dx), var(--dy)) rotate(720deg);
             opacity: 0;
         }
     }
 
-    @keyframes cair {
+    @keyframes fall {
         0% {
             transform: translateY(0);
             opacity: 1;
@@ -104,38 +97,65 @@
             opacity: 0;
         }
     }
+
+    @media (min-width: 768px) {
+        #background {
+            height: 100vh;
+            width: auto;
+            left: auto;
+        }
+    }
 </style>
 
 <body>
-    <div id="main">
-        <img id="background"
-            src="https://raw.githubusercontent.com/arimateia286/DeusiCalc/refs/heads/gh-pages/assets/img/favicons/convite-arlindo.png">
-        <div id="overlay">
-            <a id="local" href="https://maps.app.goo.gl/2vpCWDXVmmqfY1CL9"></a>
-            <a id="whatsapp"
-                href="https://api.whatsapp.com/send?phone=5585974010677&text=Oi%2C%20Arlindo!%20Estou%20confirmando%20minha%20presen%C3%A7a%20em%20seu%20anivers%C3%A1rio!%20%F0%9F%A5%B3%F0%9F%A5%B3%F0%9F%A5%B3"></a>
+    <img id="background"
+        src="https://raw.githubusercontent.com/arimateia286/DeusiCalc/refs/heads/gh-pages/assets/img/favicons/convite-arlindo.png">
+    <div id="overlay">
+        <a id="location" href="https://maps.app.goo.gl/2vpCWDXVmmqfY1CL9"></a>
+        <a id="whatsapp"
+            href="https://api.whatsapp.com/send?phone=5585974010677&text=Oi%2C%20Arlindo!%20Estou%20confirmando%20minha%20presen%C3%A7a%20em%20seu%20anivers%C3%A1rio!%20%F0%9F%A5%B3%F0%9F%A5%B3%F0%9F%A5%B3"></a>
+        <div id="wrapper">
             <div id="counter">
-                <div id="days"></div>
-                <div id="hours"></div>:
-                <div id="mins"></div>:
-                <div id="secs"></div>
+                <div id="days">
+                    <p id="daysCounter"></p>
+                    <p id="daysLabel" class="text">DIAS</p>
+                </div>
+                <p> </p>
+                <div id="hours">
+                    <p id="hoursCounter"></p>
+                    <p id="hoursLabel" class="text">HRS</p>
+                </div>:
+                <div id="mins">
+                    <p id="minsCounter"></p>
+                    <p id="minsLabel" class="text">MINS</p>
+                </div>:
+                <div id="secs">
+                    <p id="secsCounter"></p>
+                    <p id="secsLabel" class="text">SEGS</p>
+                </div>
             </div>
         </div>
-        <div class="confete-container" id="confete-container"></div>
     </div>
+    <div class="confetti-container" id="confetti-container"></div>
 </body>
 
 <script>
     window.onload = () => {
-        const get = (id) => { return document.getElementById(id); };
-
-        const background = get("background");
-        const backWidth = background.getBoundingClientRect().width,
-            backHeight = background.getBoundingClientRect().height;
-        const overlay = get("overlay");
-        overlay.style.height = `${backHeight}px`;
+        const get = (id) => document.getElementById(id);
 
         const numero = "5585991902218";
+
+        const background = get("background");
+        const backWidth = background.getBoundingClientRect().width;
+        const backHeight = background.getBoundingClientRect().height;
+
+        const overlay = get("overlay");
+        overlay.style.width = `${backWidth}px`;
+        overlay.style.height = `${backHeight}px`;
+
+        const container = get("confetti-container");
+        container.style.width = `${backWidth}px`;
+        container.style.height = `${backHeight}px`;
 
         const move = (id, y, w, h) => {
             const element = get(id);
@@ -143,103 +163,118 @@
                 y: `${y / 100 * backHeight}px`,
                 w: `${w / 100 * backWidth}px`,
                 h: `${h / 100 * backHeight}px`
-            }
+            };
             element.style.top = rect.y;
-            element.style.width = rect.w;
-            element.style.height = rect.h;
-            if (w == "auto") {
-                element.style.width = "auto";
-            }
-            if (h == "auto") {
-                element.style.heigut = "auto";
-            }
-        }
+            element.style.width = w === "auto" ? "auto" : rect.w;
+            element.style.height = h === "auto" ? "auto" : rect.h;
+        };
 
-        move("local", 78.5, 75, 6);
+        move("location", 78.5, 75, 6);
         move("whatsapp", 89, 35, 8.5);
-        move("counter", 55, "auto", "auto");
-        //move("text", 62, "auto", "auto");
+        move("wrapper", 54.5, 72, "auto");
 
-        let intervalo;
+        const updateCounter = () => {
+            const targetDate = new Date("2025-05-31T19:00:00");
+            const now = new Date();
+            const difference = targetDate - now;
 
-        const atualizarContador = () => {
-            const dataAlvo = new Date("2025-05-31T19:00:00");
-            //const dataAlvo = new Date();
-
-            const agora = new Date();
-            const diferenca = dataAlvo - agora;
-
-            if (diferenca <= 0) {
+            if (difference <= 0) {
                 get("counter").innerHTML = `Tempo Esgotado<p class="text">Quem foi, foi, quem não foi, não vai mais</p>`;
                 get("counter").style.flexDirection = "column";
-                get("counter").style.fontSize = "2rem";
                 if (intervalo) clearInterval(intervalo);
                 return;
             }
 
-            const segundos = Math.floor((diferenca / 1000) % 60);
-            const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-            const horas = Math.floor((diferenca / (1000 * 60 * 60)) % 24);
-            const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+            const seconds = Math.floor((difference / 1000) % 60);
+            const minutes = Math.floor((difference / (1000 * 60)) % 60);
+            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
 
-            get("days").innerHTML = `<p>${String(dias).padStart(2, '0')} </p><p class="text">DIAS   </p>`;
-            get("hours").innerHTML = `${String(horas).padStart(2, '0')}<p class="text">HRS</p>`;
-            get("mins").innerHTML = `${String(minutos).padStart(2, '0')}<p class="text">MINS</p>`;
-            get("secs").innerHTML = `${String(segundos).padStart(2, '0')}<p class="text">SEGS</p>`;
+            get("daysCounter").textContent = String(days).padStart(2, "0");
+            get("hoursCounter").textContent = String(hours).padStart(2, "0");
+            get("minsCounter").textContent = String(minutes).padStart(2, "0");
+            get("secsCounter").textContent = String(seconds).padStart(2, "0");
         };
 
-        atualizarContador();
-        intervalo = setInterval(atualizarContador, 1000);
+        let intervalo = setInterval(updateCounter, 1000);
+        updateCounter();
 
-        const cores = ['#00aaff', '#ff66cc'];
-        const container = document.getElementById('confete-container');
+        const wrapper = get("wrapper");
+        const counter = get("counter");
+        const labels = [
+            get("daysLabel"),
+            get("hoursLabel"),
+            get("minsLabel"),
+            get("secsLabel")
+        ];
 
-        // Explosão do centro
-        function explosaoConfetes(qtd = 250) {
+        let fontSize = 1;
+        let labelFontSize = 1;
+
+        counter.style.fontSize = `${fontSize}px`;
+
+        while (counter.getBoundingClientRect().width < wrapper.getBoundingClientRect().width) {
+            fontSize++;
+            labelFontSize = fontSize * 0.4;
+            labels.forEach(label => {
+                label.style.fontSize = `${labelFontSize}px`;
+            });
+            counter.style.fontSize = `${fontSize}px`;
+        }
+
+        if (counter.getBoundingClientRect().width > wrapper.getBoundingClientRect().width) {
+            fontSize--;
+            labelFontSize = fontSize * 0.4;
+            labels.forEach(label => {
+                label.style.fontSize = `${labelFontSize}px`;
+            });
+            counter.style.fontSize = `${fontSize}px`;
+        }
+
+        const colours = ["#00aaff", "#ff66cc"];
+
+        const confettiExplosion = (qtd = 250) => {
             for (let i = 0; i < qtd; i++) {
-                const confete = document.createElement('div');
-                confete.className = 'confete';
-                confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-                confete.style.left = '50%';
-                confete.style.top = '50%';
-                confete.style.transform = 'translate(-50%, -50%)';
+                const confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.backgroundColor = colours[Math.floor(Math.random() * colours.length)];
+                confetti.style.left = "50%";
+                confetti.style.top = "50%";
+                confetti.style.transform = "translate(-50%, -50%)";
 
-                // direção aleatória
                 const angle = Math.random() * 2 * Math.PI;
-                const distance = 100 + Math.random() * 200; // até 300px
-                const dx = Math.cos(angle) * distance + 'px';
-                const dy = Math.sin(angle) * distance + 'px';
-                confete.style.setProperty('--dx', dx);
-                confete.style.setProperty('--dy', dy);
-                confete.style.animation = `explodir 1s ease-out forwards`;
+                const distance = 100 + Math.random() * 200;
+                const dx = `${Math.cos(angle) * distance}px`;
+                const dy = `${Math.sin(angle) * distance}px`;
 
-                container.appendChild(confete);
-                setTimeout(() => confete.remove(), 1200);
+                confetti.style.setProperty("--dx", dx);
+                confetti.style.setProperty("--dy", dy);
+                confetti.style.animation = `explode 1s ease-out forwards`;
+
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 1200);
             }
-        }
+        };
 
-        // Confetes caindo de cima
-        function criarConfeteCaindo() {
-            const confete = document.createElement('div');
-            confete.className = 'confete';
-            confete.style.left = Math.random() * window.innerWidth + 'px';
-            confete.style.top = '-10px';
-            confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-            confete.style.animation = `cair ${2 + Math.random() * 3}s linear forwards`;
+        const createFallingConfetti = () => {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = `${Math.random() * window.innerWidth}px`;
+            confetti.style.top = "-10px";
+            confetti.style.backgroundColor = colours[Math.floor(Math.random() * colours.length)];
+            confetti.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`;
 
-            container.appendChild(confete);
-            setTimeout(() => confete.remove(), 5000);
-        }
+            container.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 5000);
+        };
 
-        // Disparar tudo:
-        explosaoConfetes(); // explode do meio
+        confettiExplosion();
 
-        // Após 1 segundo, começa a cair por 5 segundos
         setTimeout(() => {
-            const intervalo = setInterval(criarConfeteCaindo, 50);
+            const intervalo = setInterval(createFallingConfetti, 50);
             setTimeout(() => clearInterval(intervalo), 5000);
         }, 1000);
-    }
+    };
 </script>
 
 </html>
