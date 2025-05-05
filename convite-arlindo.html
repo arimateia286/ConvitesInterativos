@@ -64,7 +64,7 @@
         align-items: center;
     }
 
-    .confetti-container {
+    #confettiContainer {
         position: absolute;
         pointer-events: none;
         z-index: 2;
@@ -118,25 +118,25 @@
             <div id="counter">
                 <div id="days">
                     <p id="daysCounter"></p>
-                    <p id="daysLabel" class="text">DIAS</p>
+                    <p id="daysLabel">DIAS</p>
                 </div>
                 <p> </p>
                 <div id="hours">
                     <p id="hoursCounter"></p>
-                    <p id="hoursLabel" class="text">HRS</p>
+                    <p id="hoursLabel">HRS</p>
                 </div>:
                 <div id="mins">
                     <p id="minsCounter"></p>
-                    <p id="minsLabel" class="text">MINS</p>
+                    <p id="minsLabel">MINS</p>
                 </div>:
                 <div id="secs">
                     <p id="secsCounter"></p>
-                    <p id="secsLabel" class="text">SEGS</p>
+                    <p id="secsLabel">SEGS</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="confetti-container" id="confetti-container"></div>
+    <div id="confettiContainer"></div>
 </body>
 
 <script>
@@ -153,9 +153,9 @@
         overlay.style.width = `${backWidth}px`;
         overlay.style.height = `${backHeight}px`;
 
-        const container = get("confetti-container");
-        container.style.width = `${backWidth}px`;
-        container.style.height = `${backHeight}px`;
+        const confettiContainer = get("confettiContainer");
+        confettiContainer.style.width = `${backWidth}px`;
+        confettiContainer.style.height = `${backHeight}px`;
 
         const move = (id, y, w, h) => {
             const element = get(id);
@@ -251,7 +251,7 @@
                 confetti.style.setProperty("--dy", dy);
                 confetti.style.animation = `explode 1s ease-out forwards`;
 
-                container.appendChild(confetti);
+                confettiContainer.appendChild(confetti);
                 setTimeout(() => confetti.remove(), 1200);
             }
         };
@@ -264,7 +264,7 @@
             confetti.style.backgroundColor = colours[Math.floor(Math.random() * colours.length)];
             confetti.style.animation = `fall ${2 + Math.random() * 3}s linear forwards`;
 
-            container.appendChild(confetti);
+            confettiContainer.appendChild(confetti);
             setTimeout(() => confetti.remove(), 5000);
         };
 
